@@ -22,7 +22,8 @@ class HotelBookingFeatures:
         '''
         This method creates a new variable 'is_weekend_stay' from the arrival and departure dates.
         
-        The value of 'is_weekend_stay' is 1 if the stay includes a weekend night.
+        The value of 'is_weekend_stay' is 1 if the stay was in the weekend and 0 if it was not.
+        ie: it includes Saturday or Sunday.
         '''
         arrival_dayofweek = pd.DatetimeIndex(data['arrival_date']).dayofweek
         departure_dayofweek = pd.DatetimeIndex(data['departure_date']).dayofweek
@@ -35,25 +36,7 @@ class HotelBookingFeatures:
         '''
         data['num_days_stayed'] = (pd.DatetimeIndex(data['departure_date']) - pd.DatetimeIndex(data['arrival_date'])).days
         return data
-        '''
-    def num_weekend_and_week_nights(self, data):
-        '''
-        #This method creates new variables 'num_weekend_nights' and 'num_week_nights' from the arrival and departure dates.
-        '''
-        # calculate the duration of the stay in days
-        data['stay_duration'] = (data['departure_date'] - data['arrival_date']).dt.days
-
-        # calculate the number of weekday and weekend days
-        weekday_mask = (data['arrival_date'].dt.weekday < 5) & (data['departure_date'].dt.weekday < 5)
-        weekend_mask = (data['arrival_date'].dt.weekday >= 5) | (data['departure_date'].dt.weekday >= 5)
-        data['num_weekday_days'] = weekday_mask * data['stay_duration']
-        data['num_weekend_days'] = weekend_mask * data['stay_duration']
-
-        # drop the stay duration column
-        data = data.drop('stay_duration', axis=1)
-
-        return data
-        '''          
+            
     def booking_lead_time(self, data):
         '''
         This method creates a new variable 'booking_lead_time' from the arrival and booking dates.

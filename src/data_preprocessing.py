@@ -1,6 +1,12 @@
 import pandas as pd
+from sklearn.preprocessing import (
+    MinMaxScaler,
+    OrdinalEncoder,
+    RobustScaler,
+    StandardScaler,
+)
 from tqdm import tqdm
-from sklearn.preprocessing import OrdinalEncoder
+
 
 class DataPreprocessor:
     '''
@@ -40,25 +46,7 @@ class DataPreprocessor:
             pbar.update(1)
         print('Date columns converted to datetime.\n')
         return data
-        '''   
-    def remove_cancelled_bookings(self, data):
-        '''
-        #This method removes cancelled bookings.
-        
-        #The data contains bookings that were cancelled.
-        #These bookings have the value 1 in the column 'is_canceled'.
-        '''
-        # remove cancelled bookings
-        print('Removing cancelled bookings...')
-        number_of_rows_before = data.shape[0]
-        with tqdm(total=1) as pbar:
-            data = data.copy()
-            data = data[data['is_canceled'] == 0]
-            pbar.update(1)
-        # print how many rows were dropped
-        print(f'{abs(data.shape[0]- number_of_rows_before)} rows dropped from {number_of_rows_before}.\n')
-        return data
-        '''
+    
     def drop_na_rows(self, data):
         '''
         This method drops rows with missing values.
@@ -102,40 +90,38 @@ class DataPreprocessor:
         # print how many rows were dropped
         print(f'{abs(data.shape[0]- number_of_rows_before)} rows dropped from {number_of_rows_before}.\n')
         return data
-'''
-    def encode_categorical_variables(self, data):
+    
+    def scale_numerical_features(self, data, kind='robust'):
         '''
-        #This method encodes the categorical variables using the category codes.
-        #The encoding is printed for each column.
-        #The original values are printed for each column.
+        This method scales the numerical variables.
+        The default scaling method is robust scaling.
         '''
-        # encode categorical variables
-        print('Encoding categorical variables...')
-        with tqdm(total=10) as pbar:
+        # scale numerical variables
+        print('Scaling numerical variables...')
+        with tqdm(total=1) as pbar:
             data = data.copy()
-            for col in ['hotel_name', 'meal', 'source_country', 'market_segment',
-                        'distribution_channel', 'assigned_room_type', 'guest_type',
-                        'customer_type', 'season', 'company']:
-                # preserve the original values in a new column with the suffix '_original'
-                data[col + '_original'] = data[col]
-                data[col] = data[col].astype('category').cat.codes
-                pbar.update(1)
-            print('Categorical variables encoded.\n')
-
-        # print the encoding and the original values for each column
-        for col in ['hotel_name', 'meal', 'source_country', 'market_segment',
-                    'distribution_channel', 'assigned_room_type', 'guest_type',
-                    'customer_type', 'season', 'company']:
-            print(f'{col} encoding:')
-            encoding_dict = dict(enumerate(data[col].astype('category').cat.categories))
-            original_values = dict(zip(encoding_dict.values(), data[col + '_original'].unique()))
-            print(f'Original values: {original_values}')
-            # remove the original values from the data
-            data.drop(columns=[col + '_original'], inplace=True)
-        print('\n')
+            # select numerical columns
+            numerical_columns = ['adr','adults', 'children', 'babies','num_days_stayed', 
+                                'booking_lead_time', 'arrival_dayofweek', 'arrival_month',
+                                'arrival_weekofyear']
+            # scale the numerical columns
+            if kind == 'robust':
+                scaler = RobustScaler()
+                data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+            elif kind == 'standard':
+                scaler = StandardScaler()
+                data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+            elif kind == 'minmax':
+                scaler = MinMaxScaler()
+                data[numerical_columns] = scaler.fit_transform(data[numerical_columns])
+            else:
+                print('Please choose a valid scaling method.')
+            pbar.update(1)
+        print('Numerical variables scaled.\n')
         return data
-  '''  
-    def encode_categorical_variables(self, data):
+        
+
+    def encode_categorical_variables(self, data, print_encoding=False):
         '''
         This method encodes the categorical variables using ordinal encoding.
         The encoding is printed for each column.
@@ -160,10 +146,13 @@ class DataPreprocessor:
         for col in ['hotel_name', 'meal', 'source_country', 'market_segment',
                     'distribution_channel', 'assigned_room_type', 'guest_type',
                     'customer_type', 'season', 'company']:
-            print(f'{col} encoding:')
+
             encoding_dict = dict(enumerate(encoder.categories_[0]))
             original_values = dict(zip(encoding_dict.values(), data[col + '_original'].unique()))
-            print(f'Original values: {original_values}')
+            if print_encoding:
+                print(f'Encoding for {col}:')
+                print(f'Original values: {original_values}')
+                print(f'Encoded values: {encoding_dict}')
             # remove the original values from the data
             data.drop(columns=[col + '_original'], inplace=True)
         print('\n')
@@ -174,7 +163,6 @@ class DataPreprocessor:
         This method applies all the preprocessing steps to the data.
         '''
         data = self.convert_date_columns_to_datetime(data)
-        #data = self.remove_cancelled_bookings(data)
         data = self.drop_na_rows(data)
         data = self.drop_duplicates(data)
         data = self.drop_negative_adr(data)
@@ -187,7 +175,6 @@ class DataPreprocessor:
         Except for the encoding of the categorical variables.
         '''
         data = self.convert_date_columns_to_datetime(data)
-        #data = self.remove_cancelled_bookings(data)
         data = self.drop_na_rows(data)
         data = self.drop_duplicates(data)
         data = self.drop_negative_adr(data)
