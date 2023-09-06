@@ -42,6 +42,9 @@ def main(choices):
     X_train_hotel, X_test_hotel, y_train_hotel, y_test_hotel = train_test_splitter.split(hotel_bookings, codes=[1, 3, 4])
 
     # create and train the hotel model
+    print('*'*50)
+    print('Proceed to Hotels Models')
+    print('*'*50+'\n')
     hotel_model = Classification_Model(X_train_hotel, y_train_hotel, X_test_hotel, y_test_hotel, cols_to_scale=NUMERIC_COLUMNS)
     hotel_model.train_decision_tree()
     hotel_model.train_random_forest()
@@ -49,6 +52,9 @@ def main(choices):
     hotel_model.train_logistic_regression()
 
     # create and train the resort model
+    print('*'*50)
+    print('Proceed to Resorts Models')
+    print('*'*50+'\n')
     resort_model = Classification_Model(X_train_resort, y_train_resort, X_test_resort, y_test_resort, cols_to_scale=NUMERIC_COLUMNS)
     resort_model.train_decision_tree()
     resort_model.train_random_forest()

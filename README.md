@@ -34,7 +34,7 @@ If no choices are specified, the program will automatically evaluate the models.
 
 ## Data
 
-The dataset used in this project is the [Hotel Booking Demand](https://www.kaggle.com/jessemostipak/hotel-booking-demand) dataset from Kaggle. The dataset contains information about hotel bookings, including the hotel type, booking dates, and customer demographics.
+The dataset used in this project is the Hotel Booking Demand. The dataset contains information about hotel bookings, including the hotel name, booking dates, and information about the guests.
 
 ## Models
 
