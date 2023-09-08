@@ -54,7 +54,6 @@ class HotelBookingFeatures:
         data['arrival_year'] = pd.DatetimeIndex(data['arrival_date']).year
         data['arrival_weekofyear'] = pd.DatetimeIndex(data['arrival_date']).strftime('%W').astype(int)
         data['arrival_date_month'] = data['arrival_date'].dt.strftime('%b')
-        #data['arrival_weekofmonth'] = data['arrival_date'].dt.strftime('%V')
         return data
     
     def fit_transform(self, data):
@@ -63,7 +62,6 @@ class HotelBookingFeatures:
         '''
         data = self.is_weekend_stay(data)
         data = self.num_days_stayed(data)
-        #data = self.num_weekend_and_week_nights(data)
         data = self.booking_lead_time(data)
         data = self.arrival_date_features(data)
         return data

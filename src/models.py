@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 from pmdarima import auto_arima
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -48,6 +50,7 @@ class Classification_Model:
     def train_logistic_regression(self):
         print('Training logistic regression classifier...')
         with tqdm(total=1) as pbar:
+            print('Scaling the data...')
             scaler = RobustScaler()
             X_train_scaled = self.X_train.copy()
             X_train_scaled[self.cols_to_scale] = scaler.fit_transform(X_train_scaled[self.cols_to_scale])
@@ -64,7 +67,18 @@ class Classification_Model:
             pbar.update(1)
         print('XGBoost classifier trained.\n')
 
-    def confusion_matrix(self):
+    def plot_confusion_matrix(self, cm, title):
+        plt.figure(figsize=(6, 4))
+        sns.heatmap(cm, annot=True, cmap='Blues', fmt='g')
+        plt.title(title)
+        plt.xlabel('Predicted')
+        plt.ylabel('Actual')
+        plt.show()
+
+    def confusion_matrix(self, plot=False):
+        '''
+        Prints the confusion matrices for each classifier
+        '''
         print('Creating confusion matrix...')
         models = {'Decision Tree': self.dt, 'Random Forest': self.rf, 'Logistic Regression': self.lr, 'XGBoost': self.xgb}
         with tqdm(total=len(models)) as pbar:
@@ -79,10 +93,15 @@ class Classification_Model:
                 cm = confusion_matrix(self.y_test, y_pred)
                 print(f'Confusion matrix for {name}:')
                 print(cm)
+                if plot == True:
+                    self.plot_confusion_matrix(cm, f'Confusion Matrix for {name}')
                 pbar.update(1)
         print('Confusion matrices created.\n')
     
-    def plot_feature_importance(self):
+    def feature_importance(self, plot=False):
+        '''
+        Prints the feature importances for each classifier
+        '''
         print('Plotting feature importance...')
         models = {'Decision Tree': self.dt, 'Random Forest': self.rf, 'XGBoost': self.xgb}
         feature_importances = pd.DataFrame(columns=['feature', 'importance', 'model'])
@@ -98,11 +117,33 @@ class Classification_Model:
             feature_importances_model = feature_importances[feature_importances['model'] == name].sort_values(by='importance', ascending=False)
             print(f'Feature importance for {name}:')
             print(feature_importances_model)
+            if plot == True:
+                # plot the feature importances
+                plt.figure(figsize=(10, 6))
+                plt.bar(feature_importances_model['feature'], feature_importances_model['importance'])
+                plt.title(f'Feature Importance for {name}')
+                plt.xlabel('Feature')
+                plt.ylabel('Importance')
+                plt.xticks(rotation=90)
+                plt.show()
         #print(feature_importances)
-        print('Feature importance plotted.\n')
-        return feature_importances
+        print('Feature importance printed.\n')
+        return feature_importances_model
     
     def evaluate(self,cv=5):
+        '''
+        Evaluates the classifiers using cross validation
+
+        Parameters
+        ----------
+        cv : int, default=5
+            Number of folds to use for cross validation
+            
+        Returns
+        -------
+        results : list
+            List of results for each classifier
+        '''
         print('Evaluating classifiers with cross validation...')
         models = {'Decision Tree': self.dt, 'Random Forest': self.rf, 'Logistic Regression': self.lr, 'XGBoost': self.xgb}
         results = []
@@ -129,6 +170,9 @@ class Classification_Model:
         print(tabulate(results, headers=headers, tablefmt='orgtbl'))
 
     def predict(self, data):
+        '''
+        Predicts the class for new data
+        '''
         print('Predicting on new data...')
         models = {'Decision Tree': self.dt, 'Random Forest': self.rf, 'Logistic Regression': self.lr, 'XGBoost': self.xgb}
         with tqdm(total=len(models)) as pbar:

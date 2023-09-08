@@ -23,8 +23,7 @@ class TrainTestSplitter:
        'customer_type', 'company', 'adr', 'adults', 'children',
        'babies', 'meal', 'market_segment','distribution_channel',
        'assigned_room_type','is_weekend_stay', 'num_days_stayed',
-       'booking_lead_time', 'arrival_dayofweek', 'arrival_month',
-       'arrival_weekofyear']
+       'booking_lead_time', 'arrival_dayofweek', 'arrival_month']
         
         #hotel_names = ['Braga City Hotel','Lisbon City Hotel', 'Porto City Hotel']
         #resort_names = ['Algarve Retreat' ,'Duro Valley Resort']

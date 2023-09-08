@@ -1,10 +1,8 @@
-import os
-import sys
-
-import pandas as pd
 import argparse
+import os
+#import sys
 
-sys.path.append(os.path.join('..','src'))
+#sys.path.append(os.path.join('src'))
 
 import warnings
 
@@ -17,8 +15,7 @@ from src.models import Classification_Model
 from src.utils import DataLoader, TrainTestSplitter
 
 NUMERIC_COLUMNS = ['adr','adults', 'children', 'babies','num_days_stayed', 
-                                'booking_lead_time', 'arrival_dayofweek', 'arrival_month',
-                                'arrival_weekofyear']
+                                'booking_lead_time', 'arrival_dayofweek', 'arrival_month']
 
 
 def main(choices):
@@ -50,6 +47,19 @@ def main(choices):
     hotel_model.train_random_forest()
     hotel_model.train_xgboost()
     hotel_model.train_logistic_regression()
+    # evaluate the models
+    print('\nEvaluating Hotels Models...\n')
+    hotel_model.evaluate()
+
+    if 'confusion_matrix' in choices:
+        # print the confusion matrices
+        print('\nPrinting Confusion Matrices for Hotels...\n')
+        hotel_model.confusion_matrix()
+
+    if 'feature_importance' in choices:
+        # print the feature importances
+        print('\nPrinting feature importances for Hotels...\n')
+        hotel_model.feature_importance()
 
     # create and train the resort model
     print('*'*50)
@@ -62,22 +72,19 @@ def main(choices):
     resort_model.train_logistic_regression()
 
     # evaluate the models
-    print('Evaluating models...')
-    hotel_model.evaluate()
+    print('\nEvaluating Resorts Models...\n')
     resort_model.evaluate()
-
-    # call the appropriate method for each choice
-    if 'confusion_matrix' in choices:
-        # print the confusion matrices
-        print('Printing confusion matrices...')
-        hotel_model.confusion_matrix()
-        resort_model.confusion_matrix()
 
     if 'feature_importance' in choices:
         # print the feature importances
-        print('Printing feature importances...')
-        hotel_model.plot_feature_importance()
-        resort_model.plot_feature_importance()
+        print('\nPrinting feature importances for Resorts...\n')
+        resort_model.feature_importance()
+
+    if 'confusion_matrix' in choices:
+        # print the confusion matrices
+        print('\nPrinting Confusion Matrices for Resorts...\n')
+        hotel_model.confusion_matrix(plot=False)
+        resort_model.confusion_matrix(plot=False)
 
 if __name__ == '__main__':
     # parse the command-line arguments
