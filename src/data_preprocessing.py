@@ -104,6 +104,8 @@ class DataPreprocessor:
             numerical_columns = ['adr','adults', 'children', 'babies','num_days_stayed', 
                                 'booking_lead_time', 'arrival_dayofweek', 'arrival_month',
                                 'arrival_weekofyear']
+            # see if these numerical columns are in the data, if not, remove them from the list
+            numerical_columns = [col for col in numerical_columns if col in data.columns]
             # scale the numerical columns
             if kind == 'robust':
                 scaler = RobustScaler()

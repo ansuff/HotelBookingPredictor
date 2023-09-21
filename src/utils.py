@@ -15,7 +15,7 @@ class TrainTestSplitter:
     def __init__(self):
         pass
 
-    def split(self,data,codes=[1, 3, 4]): # hotel_codes = [1, 3, 4] resort_codes = [0, 2]
+    def split(self,data,codes=[1, 3, 4],encoded=True): # hotel_codes = [1, 3, 4] resort_codes = [0, 2]
         '''
         This method splits the data into train and test sets.
         '''
@@ -25,9 +25,13 @@ class TrainTestSplitter:
        'assigned_room_type','is_weekend_stay', 'num_days_stayed',
        'booking_lead_time', 'arrival_dayofweek', 'arrival_month']
         
+        columns_to_keep = [col for col in columns_to_keep if col in data.columns]
+        
         #hotel_names = ['Braga City Hotel','Lisbon City Hotel', 'Porto City Hotel']
         #resort_names = ['Algarve Retreat' ,'Duro Valley Resort']
-
+        if not encoded:
+            codes = ['Braga City Hotel','Lisbon City Hotel', 'Porto City Hotel',
+                     'Algarve Retreat' ,'Duro Valley Resort']
         # make sure the hotel names are encoded, they should be integers
         X = data[data['hotel_name'].isin(codes)][columns_to_keep]
         y = data[data['hotel_name'].isin(codes)]['is_canceled']
