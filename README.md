@@ -32,6 +32,17 @@ The `choices` parameter is optional and can be one or more of the following opti
 
 If no choices are specified, the program will automatically evaluate the models.
 
+or you can use run.sh:
+
+```
+./run.sh [choices]
+```
+
+The choices are test and classify. 
+
+test: run the project tests
+classify: run the project
+
 ## Data
 
 The dataset used in this project is the Hotel Booking Demand. The dataset contains information about hotel bookings, including the hotel name, booking dates, and information about the guests.

@@ -17,7 +17,7 @@ task_test() {
 
 # Define a function to run the main script
 task_classify() {
-    poetry run python main.py
+    poetry run python main.py confusion_matrix feature_importance
 }
 
 usage() {
