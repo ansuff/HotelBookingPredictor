@@ -1,0 +1,6 @@
+tests/__pycache__
+presentation
+.vscode
+.pytest_cache
+src/__pycache__
+.DS_Store
