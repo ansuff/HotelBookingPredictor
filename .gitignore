@@ -1,6 +1,17 @@
+# Ignore Python test cache
 tests/__pycache__
+
+# Ignore presentation folder
 presentation
+
+# Ignore Visual Studio Code settings
 .vscode
+
+# Ignore pytest cache
 .pytest_cache
+
+# Ignore Python source cache
 src/__pycache__
+
+# Ignore macOS DS_Store files
 .DS_Store
