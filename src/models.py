@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from pmdarima import auto_arima
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -195,22 +194,6 @@ class forecasting_model:
         self.y_train = y_train
         self.X_test = X_test
         self.y_test = y_test
-
-    def train_ARIMA(self):
-        print('Training ARIMA model...')
-        # find the best order for ARIMA model
-        self.arima = auto_arima(self.y_train, start_p=1, start_q=1, max_p=3, max_q=3, m=12, start_P=0, seasonal=True, d=1, D=1, trace=True, error_action='ignore', suppress_warnings=True, stepwise=True)
-        # fit the ARIMA model
-        self.arima.fit(self.y_train)
-        print('ARIMA model trained.\n')
-
-    def train_SARIMA(self):
-        print('Training SARIMA model...')
-        # find the best order for SARIMA model
-        self.sarima = auto_arima(self.y_train, start_p=1, start_q=1, max_p=3, max_q=3, m=12, start_P=0, seasonal=True, d=1, D=1, trace=True, error_action='ignore', suppress_warnings=True, stepwise=True)
-        # fit the SARIMA model
-        self.sarima.fit(self.y_train)
-        print('SARIMA model trained.\n')
 
     def evaluate(self):
         print('Evaluating models...')
