@@ -6,21 +6,28 @@ This project is a machine learning model that predicts whether a hotel booking w
 
 To install the required packages, create a virtual environment and run the following command:
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
 or use poetry:
 
-```
+```bash
 poetry install
+```
+
+### Note for Developers
+
+If you encounter issues related to `libxgboost.dylib` not being loaded, you may need to install the OpenMP runtime. On macOS, you can install it using Homebrew:
+```bash
+brew install libomp
 ```
 
 ## Usage
 
 To run the program, use the following command:
 
-```
+```bash
 python main.py [choices]
 ```
 
@@ -34,7 +41,7 @@ If no choices are specified, the program will automatically evaluate the models.
 
 or you can use run.sh:
 
-```
+```bash
 ./run.sh [choices]
 ```
 
